@@ -3,7 +3,7 @@ LittleLogger
 
 I created this project for two reasons:
 
-1. I'm tired of trying to find `System.out.println` output on Mac OS X systems.
+1. I'm tired of trying to find Java/Scala `System.out.println` output on Mac OS X systems.
 1. I don't like the complexity of traditional logging utilities for simple/little projects.
 
 I do a lot of things "wrong" in the code (like using `null` values), but amazingly it still manages to work.
