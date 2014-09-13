@@ -8,6 +8,10 @@ I created this project for two reasons:
 
 I do a lot of things "wrong" in the code (like using `null` values), but amazingly it still manages to work.
 
+Caveat: This logger is not intended in any way for use in large or production applications. 
+If you use it there, wow, good luck, you're on your own. (Hint: Use Grizzled-SLF4J instead.)
+
+
 Usage
 -----
 
@@ -38,6 +42,9 @@ class Bar {
 ````
 
 As shown, there is only a `log` method; there are no `debug`, `info`, `error` methods, etc. (Just trying to keep things simple.)
+
+If all of that seems to make sense, give this logger a try in your own small/little applications.
+
 
 Contact
 -------
