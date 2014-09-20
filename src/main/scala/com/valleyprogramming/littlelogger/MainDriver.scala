@@ -16,6 +16,7 @@ object MainDriver extends App {
     
     new Foo
     new Bar
+    new Baz
 
 }
 
@@ -29,5 +30,14 @@ class Bar {
     val logger = LittleLogger("Bar")
     logger.log("made it to A")
     logger.log("made it to B")
+}
+
+class Baz {    
+    val logger = LittleLogger("Baz")
+    logger.log("made it to A")
+    logger.setEnabled(false)
+    logger.log("made it to B (should not see this)")
+    logger.setEnabled(true)
+    logger.log("made it to C")
 }
 
