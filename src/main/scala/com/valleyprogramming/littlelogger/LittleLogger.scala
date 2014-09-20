@@ -12,9 +12,9 @@ import java.text.SimpleDateFormat
  *     logger.init("/tmp/myapp.log")
  *     logger.log("made it to A")
  *     logger.log("made it to B")
- *     
+ *
  *  See the MainDriver.scala file that accompanies this file for more examples.
- *  
+ *
  *  @param identifier The name you want to precede your output with. Typically the name of your class.
  */
 class LittleLogger(identifier: String) {
@@ -36,6 +36,7 @@ class LittleLogger(identifier: String) {
      * Write your message to the output log file.
      */
     def log(msg: String) {
+        if (!LittleLogger.enabled) return
         if (LittleLogger.filename == null) {
             System.err.println("LittleLogger: `filename` was null, not going to write anything")
             return
@@ -47,19 +48,29 @@ class LittleLogger(identifier: String) {
     
     private def getTime = timeFormatter.format(Calendar.getInstance.getTime)
 
+    def setEnabled(enabled: Boolean) {
+        LittleLogger.enabled = enabled
+    }
+    
+    def isEnabled = LittleLogger.enabled
 }
 
 /**
- * The basic idea here is to share the filename between all instances of the LittleLogger class.
+ * The basic idea here is to share the `filename` and `enabled` settings between all instances of the LittleLogger class.
  * This object also makes it a little easier to construct a LittleLogger instance with the use
  * of an `apply` method.
  */
 object LittleLogger {
     
     private var filename: String = _
+    private var enabled = true
     
     def apply(identifier: String): LittleLogger = {
         new LittleLogger(identifier)
+    }
+    
+    private def setEnabled(b: Boolean) {
+        enabled = b
     }
 
 }

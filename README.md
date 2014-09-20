@@ -12,6 +12,12 @@ Caveat: This logger is not intended in any way for use in large or production ap
 If you use it there, wow, good luck, you're on your own. (Hint: Use Grizzled-SLF4J instead.)
 
 
+Changelog
+---------
+
+2014-09-20: v0.2: Added `enabled` setting so I can easily enable/disable logging.
+
+
 Usage
 -----
 
@@ -42,6 +48,9 @@ class Bar {
 ````
 
 As shown, there is only a `log` method; there are no `debug`, `info`, `error` methods, etc. (Just trying to keep things simple.)
+
+You can also disable and enable logging now if you want/need to. My assumption is that I want logging enabled
+by default, so that's how it works. Call `logger.setEnabled(false)` to disable logging.
 
 If all of that seems to make sense, give this logger a try in your own small/little applications.
 
