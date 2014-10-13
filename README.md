@@ -6,7 +6,7 @@ I created this project for two reasons:
 1. I'm tired of trying to find Java/Scala `System.out.println` output on Mac OS X systems.
 1. I don't like the complexity of traditional logging utilities for simple/little projects.
 
-I do a lot of things "wrong" in the code (like using `null` values), but amazingly it still manages to work.
+I do a lot of things "wrong" in the code (like using `null` values), but amazingly it still manages to work. :)
 
 Caveat: This logger is not intended in any way for use in large or production applications. 
 If you use it there, wow, good luck, you're on your own. (Hint: Use Grizzled-SLF4J instead.)
@@ -15,7 +15,7 @@ If you use it there, wow, good luck, you're on your own. (Hint: Use Grizzled-SLF
 Changelog
 ---------
 
-2104-10-13: v0.3: Changed the API so consumers can call `info`, `debug`, etc. Also, now writing to file in a Future.
+2104-10-13: v0.3: Changed the API so consumers can call `info`, `debug`, etc. Also, now writing to file in a Future.  
 2014-09-20: v0.2: Added `enabled` setting so I can easily enable/disable logging.
 
 
