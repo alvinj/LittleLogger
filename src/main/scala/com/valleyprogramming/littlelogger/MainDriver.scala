@@ -12,7 +12,7 @@ package com.valleyprogramming.littlelogger
 object MainDriver extends App {
 
     val logger = LittleLogger("MainDriver")
-    logger.init("/Users/Al/Projects/Scala/LittleLogger/log.out")
+    logger.init("/Users/Al/Projects/Scala/LittleLogger/log.out", LittleLogger.DEBUG)
     
     new Foo
     new Bar
@@ -20,24 +20,24 @@ object MainDriver extends App {
 
 }
 
-class Foo {    
+class Foo {
     val logger = LittleLogger(this.getClass.getName)
-    logger.log("made it to A")
-    logger.log("made it to B")
+    logger.debug("made it to A")
+    logger.info("made it to B")
 }
 
 class Bar {    
     val logger = LittleLogger("Bar")
-    logger.log("made it to A")
-    logger.log("made it to B")
+    logger.warn("made it to A")
+    logger.error("made it to B")
 }
 
 class Baz {    
     val logger = LittleLogger("Baz")
-    logger.log("made it to A")
+    logger.info("made it to A")
     logger.setEnabled(false)
-    logger.log("made it to B (should not see this)")
+    logger.debug("made it to B (should not see this)")
     logger.setEnabled(true)
-    logger.log("made it to C")
+    logger.error("made it to C")
 }
 
