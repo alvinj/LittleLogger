@@ -3,23 +3,39 @@ package com.valleyprogramming.littlelogger
 import java.io._
 import java.util.Calendar
 import java.text.SimpleDateFormat
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
- * A very simple logger that lets you easily log output to a file.
+ * A simple logger that lets you easily log output to a file.
+ * I created this for small projects; you probably don't want to use it in
+ * production projects, and definitely not in large projects.
  * 
- * Order of the logging levels is: INFO, DEBUG, WARN, ERROR.
+ * For the consumer, usage looks as follows. Your `main` class should create a
+ * LittleLogger instance and initialize it, like this:
+ * 
+ *     val logger = LittleLogger("MyMainClass")
+ *     logger.init("/tmp/myapp.log")
+ * 
+ * After that, that class can log messages like this:
+ * 
+ *     logger.debug(s"in controller, name = $name")
+ *     logger.error("d'oh! got an error.")
+ *
+ * Once the logger has been initialized in your main class, other classes just need
+ * to create a logger instance, and write to it, like this:
+ * 
+ *     val logger = LittleLogger("GuiController")
+ *     logger.debug("just created the main window")
+ *
+ * The logger supports four logging levels, and their order is: INFO, DEBUG, WARN, ERROR.
  * If you set the logging level to INFO, it will print all messages.
  * If you set the logging level to DEBUG, it will print DEBUG, WARN, and ERROR messages.
  * 
- * Usage:
- *     val logger = LittleLogger("MyClass")
- *     logger.init("/tmp/myapp.log")
- *     logger.debug("made it to A")
- *     logger.warn("made it to B")
- *
  *  See the MainDriver.scala file that accompanies this file for more examples.
  *
- *  @param identifier The name you want to precede your output with. Typically the name of your class.
+ *  @param identifier The name you want to precede your output with. Typically this is the
+ *  name of your class (but you can use any string).
  */
 class LittleLogger(identifier: String) {
     
@@ -61,12 +77,16 @@ class LittleLogger(identifier: String) {
     private def logMessageIfEnabled(msg: String, logLevelAsString: String) {
         if (!LittleLogger.enabled) return
         if (LittleLogger.filename == null) {
+            // try to help the user by writing this log message, which hopefully they will find.
+            // TODO could also throw an exception here.
             System.err.println("LittleLogger: `filename` was null, not going to write anything")
             return
         }
-        val bw = new BufferedWriter(new FileWriter(new File(LittleLogger.filename), true))
-        bw.write(s"$getTime | $logLevelAsString | $identifier | $msg\n")
-        bw.close
+        val task = Future {
+            val bw = new BufferedWriter(new FileWriter(new File(LittleLogger.filename), true))
+            bw.write(f"$getTime | $logLevelAsString%-5s | $identifier | $msg\n")
+            bw.close
+        }
     }
     
     private def getTime = timeFormatter.format(Calendar.getInstance.getTime)
