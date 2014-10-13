@@ -4,7 +4,9 @@ import java.io._
 import java.util.Calendar
 import java.text.SimpleDateFormat
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
+import java.util.concurrent.Executors
+//import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
  * A simple logger that lets you easily log output to a file.
@@ -38,6 +40,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
  *  name of your class (but you can use any string).
  */
 class LittleLogger(identifier: String) {
+    
+    /**
+     * I'm experimenting with getting some control over how many threads are used
+     * by my futures. Found this config setting here:
+     * stackoverflow.com/questions/15285284/how-to-configure-a-fine-tuned-thread-pool-for-futures
+     */
+    //implicit val ec = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(10))
     
     import LittleLogger.{INFO, DEBUG, WARN, ERROR}
     
@@ -82,15 +91,50 @@ class LittleLogger(identifier: String) {
             System.err.println("LittleLogger: `filename` was null, not going to write anything")
             return
         }
-        val task = Future {
-            val bw = new BufferedWriter(new FileWriter(new File(LittleLogger.filename), true))
-            bw.write(f"$getTime | $logLevelAsString%-5s | $identifier | $msg\n")
-            bw.close
-        }
+
+// 1 - Thread        
+//        new Thread {
+//            override def run {
+//                val bw = new BufferedWriter(new FileWriter(new File(LittleLogger.filename), true))
+//                bw.write(f"$getTime | $logLevelAsString%-5s | $identifier | $msg\n")
+//                bw.close
+//            }
+//        }.start
+
+// 2 - Future
+        // i don't know why, but Future keeps the lines in the log file more or less in sync
+        // from a time perspective, but the Thread solution above writes them in a random order.
+//        val task = Future {
+//            val bw = new BufferedWriter(new FileWriter(new File(LittleLogger.filename), true))
+//            bw.write(f"$getTime | $logLevelAsString%-5s | $identifier | $msg\n")
+//            bw.close
+//        }
+
+        // 3 - don't try to write in parallel
+        val bw = new BufferedWriter(new FileWriter(new File(LittleLogger.filename), true))
+        bw.write(f"$getTime | $logLevelAsString%-5s | $identifier | $msg\n")
+        bw.close
+
     }
     
     private def getTime = timeFormatter.format(Calendar.getInstance.getTime)
 
+    /**
+     * Set this to `false` if you want to disable logging in your application.
+     * For instance, you may want to do this in the `main` method of your application
+     * to turn off logging when you go into production ... that's probably the biggest
+     * reason. This method is really a convenience method intended for that sort of use.
+     * 
+     * Setting this to `true` or `false` has a global effect. If you set it to `false`
+     * in your `main` method, it turns off logging throughout your application.
+     * 
+     * I don't recommend setting this to `false` and then back to `true` within your
+     * application. This class writes to the logging file using threads, and a global
+     * on/off switch combined with threads will yield unpredictable results, and to be
+     * clear, that's not why this method exists; it exists for the reason stated above,
+     * to be able to turn off logging globally in a `main` method, such as when you
+     * go into production.
+     */
     def setEnabled(enabled: Boolean) {
         LittleLogger.enabled = enabled
     }
@@ -109,8 +153,8 @@ object LittleLogger {
     private var enabled = true
     protected var logLevel = DEBUG
     
-    val DEBUG   = 1
-    val INFO    = 2
+    val INFO    = 1
+    val DEBUG   = 2
     val WARN    = 3
     val ERROR   = 4
     
