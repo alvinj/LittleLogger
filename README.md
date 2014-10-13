@@ -27,31 +27,46 @@ Proper usage is shown in the *MainDriver.scala* file, but to make life easier, t
 ````
 object MainDriver extends App {
 
+    // create a LittleLogger instance
     val logger = LittleLogger("MainDriver")
-    logger.init("/Users/Al/Projects/Scala/LittleLogger/log.out")
-    
+
+    // initialize the desired log file, as well as the desired logging level
+    logger.init(filename = "/Users/Al/Projects/Scala/LittleLogger/log.out",
+                desiredLogLevel = LittleLogger.INFO)
+
     new Foo
     new Bar
+    new Baz
 
 }
 
-class Foo {    
-    val logger = LittleLogger(this.getClass.getName)
-    logger.log("made it to A")
-    logger.log("made it to B")
+class Foo {
+    // give the logger the name of your class
+    //val logger = LittleLogger(this.getClass.getName)
+    val logger = LittleLogger("Foo")
+    logger.info("this is an info message from class Foo")
+    logger.debug("this is a debug message from class Foo")
+    logger.warn("this is a warn message from class Foo")
+    logger.error("this is an error message from class Foo")
 }
 
-class Bar {    
-    val logger = LittleLogger("Bar")
-    logger.log("made it to A")
-    logger.log("made it to B")
-}
+// (Bar and Baz code omitted)
 ````
-
-As shown, there is only a `log` method; there are no `debug`, `info`, `error` methods, etc. (Just trying to keep things simple.)
 
 You can also disable and enable logging now if you want/need to. My assumption is that I want logging enabled
 by default, so that's how it works. Call `logger.setEnabled(false)` to disable logging.
+
+Logger output looks like this:
+
+````
+05:45:14:296 | INFO  | FOO | this is an info message from class Foo
+05:45:14:329 | INFO  | BAZ | this is an info message from class Baz
+05:45:14:317 | INFO  | Bar | this is an info message from class Bar
+05:45:14:349 | DEBUG | BAZ | this is a debug message from class Baz
+05:45:14:349 | DEBUG | FOO | this is a debug message from class Foo
+05:45:14:349 | DEBUG | Bar | this is a debug message from class Bar
+
+````
 
 If all of that seems to make sense, give this logger a try in your own small/little applications.
 
